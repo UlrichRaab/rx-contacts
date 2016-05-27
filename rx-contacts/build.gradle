@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+publish {
+    groupId = 'de.ulrichraab'
+    artifactId = 'rx-contacts'
+    publishVersion = '1.0.0'
+    desc = 'Android library to get contacts using RxJava'
+    website = 'https://github.com/UlrichRaab/rx-contacts'
+    licences = ['Apache-2.0']
+    issueTracker = 'https://github.com/UlrichRaab/rx-contacts/issues'
+    bintrayUser = properties.getProperty('bintray.user')
+    bintrayKey = properties.getProperty('bintray.apikey')
+    dryRun = false //  If set to true this will run everything but it won't upload the package. If false then it will upload.
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxjava:1.1.3'
+    // Testing
+    testCompile 'junit:junit:4.12'
+}
