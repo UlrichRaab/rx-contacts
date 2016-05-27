@@ -166,5 +166,6 @@ public class HiddenActivity extends AppCompatActivity {
 
    private void onContactsLoaded (@Nullable Collection<Contact> contacts) {
       RxContacts.with(this).onContactsLoaded(contacts);
+      finish();
    }
 }
