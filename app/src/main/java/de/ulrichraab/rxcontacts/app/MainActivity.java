@@ -5,21 +5,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
-import de.ulrichraab.rxcontacts.model.Contact;
 import de.ulrichraab.rxcontacts.RxContacts;
-import de.ulrichraab.rxcontacts.model.PhoneNumber;
+import de.ulrichraab.rxcontacts.model.Contact;
 import rx.Observer;
 
 
 public class MainActivity extends AppCompatActivity {
-
-   public static final String TAG = MainActivity.class.getName();
 
    private ContactAdapter contactAdapter;
 
@@ -50,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
    }
 
    private void requestContacts () {
-      RxContacts.with(this).requestContacts().subscribe(new Observer<Collection<Contact>>() {
+      RxContacts.with(this).requestContacts().subscribe(new Observer<List<Contact>>() {
          @Override
          public void onCompleted () {}
          @Override
@@ -58,9 +53,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
          }
          @Override
-         public void onNext (Collection<Contact> contacts) {
+         public void onNext (List<Contact> contacts) {
             ContactAdapter contactAdapter = getContactAdapter();
-            contactAdapter.setContacts(new ArrayList<>(contacts));
+            contactAdapter.setContacts(contacts);
             contactAdapter.notifyDataSetChanged();
          }
       });
