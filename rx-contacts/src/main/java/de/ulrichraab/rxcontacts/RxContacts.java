@@ -54,7 +54,7 @@ public class RxContacts {
       return subject;
    }
 
-   public void onContactsLoaded (@Nullable Collection<Contact> contacts) {
+   void onContactsLoaded (@Nullable Collection<Contact> contacts) {
       if (contacts != null) {
          subject.onNext(contacts);
       }
