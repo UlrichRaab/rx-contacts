@@ -3,8 +3,12 @@ package de.ulrichraab.rxcontacts.app;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import de.ulrichraab.rxcontacts.model.Contact;
@@ -17,44 +21,48 @@ public class MainActivity extends AppCompatActivity {
 
    public static final String TAG = MainActivity.class.getName();
 
+   private ContactAdapter contactAdapter;
+
    @Override
    protected void onCreate (Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
-
-      RxContacts.with(this).requestContacts().subscribe(new Observer<Collection<Contact>>() {
-         @Override
-         public void onCompleted () {
-            Log.wtf(TAG, "Loading contacts completed");
-         }
-
-         @Override
-         public void onError (Throwable e) {}
-
-         @Override
-         public void onNext (Collection<Contact> contacts) {
-            Log.wtf(TAG, contacts.size() + " contacts loaded");
-            for (Contact contact : contacts) {
-               Log.wtf(TAG, "-----");
-               String cs = convert(contact);
-               Log.wtf(TAG, cs);
-            }
-            Log.wtf(TAG, "-----");
-         }
-      });
+      initializeRecyclerView();
+      requestContacts();
    }
 
-   private String convert (Contact contact) {
-      StringBuilder sb = new StringBuilder()
-            .append("id: ").append(contact.getId()).append("\n")
-            .append("name: ").append(contact.getDisplayName()).append("\n")
-            .append("photo uri: ").append(contact.getPhotoUri()).append("\n");
-      for (PhoneNumber phoneNumber : contact.getPhoneNumbers()) {
-         sb.append("phone number (")
-           .append(phoneNumber.getTypeLabel())
-           .append("): ")
-           .append(phoneNumber.getNumber()).append("\n");
+   private void initializeRecyclerView () {
+      ContactAdapter contactAdapter = getContactAdapter();
+      LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+      RecyclerView rv = (RecyclerView) findViewById(R.id.recyclerView_contacts);
+      if (rv != null) {
+         rv.setAdapter(contactAdapter);
+         rv.setLayoutManager(linearLayoutManager);
       }
-      return sb.toString();
+   }
+
+   private ContactAdapter getContactAdapter () {
+      if (contactAdapter != null) {
+         return contactAdapter;
+      }
+      contactAdapter = new ContactAdapter();
+      return contactAdapter;
+   }
+
+   private void requestContacts () {
+      RxContacts.with(this).requestContacts().subscribe(new Observer<Collection<Contact>>() {
+         @Override
+         public void onCompleted () {}
+         @Override
+         public void onError (Throwable e) {
+            Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+         }
+         @Override
+         public void onNext (Collection<Contact> contacts) {
+            ContactAdapter contactAdapter = getContactAdapter();
+            contactAdapter.setContacts(new ArrayList<>(contacts));
+            contactAdapter.notifyDataSetChanged();
+         }
+      });
    }
 }
