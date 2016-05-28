@@ -213,7 +213,7 @@ public class HiddenActivity extends AppCompatActivity {
       }
    }
 
-   private void onContactsLoaded (@Nullable Collection<Contact> contacts) {
+   private void onContactsLoaded (@Nullable List<Contact> contacts) {
       RxContacts.with(this).onContactsLoaded(contacts);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
          finishAndRemoveTask();

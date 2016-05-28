@@ -20,7 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import java.util.Collection;
+import java.util.List;
 
 import de.ulrichraab.rxcontacts.model.Contact;
 import rx.subjects.PublishSubject;
@@ -35,7 +35,7 @@ public class RxContacts {
    private static RxContacts instance;
 
    private Context context;
-   private PublishSubject<Collection<Contact>> subject;
+   private PublishSubject<List<Contact>> subject;
 
    public static synchronized RxContacts with (Context context) {
       if (instance == null) {
@@ -48,13 +48,13 @@ public class RxContacts {
       this.context = context;
    }
 
-   public PublishSubject<Collection<Contact>> requestContacts () {
+   public PublishSubject<List<Contact>> requestContacts () {
       subject = PublishSubject.create();
       startHiddenActivity();
       return subject;
    }
 
-   void onContactsLoaded (@Nullable Collection<Contact> contacts) {
+   void onContactsLoaded (@Nullable List<Contact> contacts) {
       if (contacts != null) {
          subject.onNext(contacts);
       }
