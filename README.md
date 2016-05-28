@@ -21,3 +21,24 @@ dependencies {
     compile 'de.ulrichraab:rx-contacts:1.0.2'
 }
 ```
+
+# Example
+
+```java
+RxContacts.with(context)
+          .requestContacts()
+          .subscribe(new Observer<List<Contact>>() {
+             @Override
+             public void onCompleted() {
+                // Loading done
+             }
+             @Override
+             public void onError (Throwable e) {
+                // Handle error
+             }
+             @Override
+             public void onNext(List<Contact> contacts) {
+                // Use the contacts
+             }
+          });
+```
