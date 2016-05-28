@@ -31,23 +31,37 @@ public class Contact {
    private long id;
    private String displayName;
    private List<PhoneNumber> phoneNumbers;
-   private Uri photoUri;
+   private Uri photo;
+   private Uri thumbnail;
 
    public Contact (Builder builder) {
       id = builder.id;
       displayName = builder.displayName;
       phoneNumbers = builder.phoneNumbers;
-      photoUri = builder.photoUri;
+      photo = builder.photo;
+      thumbnail = builder.thumbnail;
    }
 
+   /**
+    * Returns the unique id of this contact.
+    * @return The unique id of this contact.
+    */
    public long getId () {
       return id;
    }
 
+   /**
+    * Returns the display name of this contact.
+    * @return The display name of this contact.
+    */
    public String getDisplayName () {
       return displayName;
    }
 
+   /**
+    * Returns the phone numbers of this contact.
+    * @return The phone numbers of this contact.
+    */
    public List<PhoneNumber> getPhoneNumbers () {
       if (phoneNumbers == null) {
          phoneNumbers = new ArrayList<>(0);
@@ -55,8 +69,20 @@ public class Contact {
       return new ArrayList<>(phoneNumbers);
    }
 
-   public Uri getPhotoUri () {
-      return photoUri;
+   /**
+    * Returns a URI that can be used to retrieve the contact's full-size photo.
+    * @return The URI of the full-size photo of this contact.
+    */
+   public Uri getPhoto () {
+      return photo;
+   }
+
+   /**
+    * Returns a URI that can be used to retrieve a thumbnail of the contact's photo.
+    * @return The URI of the thumbnail of this contact's photo.
+    */
+   public Uri getThumbnail () {
+      return thumbnail;
    }
 
    @Override
@@ -84,7 +110,8 @@ public class Contact {
       private long id;
       private String displayName;
       private List<PhoneNumber> phoneNumbers;
-      private Uri photoUri;
+      private Uri photo;
+      private Uri thumbnail;
 
       public Builder () {
          phoneNumbers = new ArrayList<>();
@@ -105,10 +132,13 @@ public class Contact {
          return this;
       }
 
-      public Builder photoUri (String photoUri) {
-         if (photoUri != null && !photoUri.isEmpty()) {
-            this.photoUri = Uri.parse(photoUri);
-         }
+      public Builder photo (Uri photo) {
+         this.photo = photo;
+         return this;
+      }
+
+      public Builder thumbnail (Uri thumbnail) {
+         this.thumbnail = thumbnail;
          return this;
       }
 

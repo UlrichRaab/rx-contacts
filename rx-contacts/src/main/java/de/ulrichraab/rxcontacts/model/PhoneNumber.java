@@ -16,6 +16,9 @@
 package de.ulrichraab.rxcontacts.model;
 
 
+import android.support.annotation.Nullable;
+
+
 /**
  * TODO Write javadoc
  * @author Ulrich Raab
@@ -68,7 +71,11 @@ public class PhoneNumber {
          return this;
       }
 
+      @Nullable
       public PhoneNumber build () {
+         if (number == null || number.isEmpty()) {
+            return null;
+         }
          return new PhoneNumber(this);
       }
    }
