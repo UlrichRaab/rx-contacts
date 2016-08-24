@@ -16,14 +16,15 @@
 package de.ulrichraab.rxcontacts;
 
 
+import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.Nullable;
+import android.database.Cursor;
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.util.LongSparseArray;
 
-import java.util.List;
-
-import de.ulrichraab.rxcontacts.model.Contact;
-import rx.subjects.PublishSubject;
+import rx.Observable;
+import rx.Subscriber;
 
 
 /**
@@ -32,44 +33,87 @@ import rx.subjects.PublishSubject;
  */
 public class RxContacts {
 
-   private static RxContacts instance;
+    private static final String[] PROJECTION = {
+        ContactsContract.Data.CONTACT_ID,
+        ContactsContract.Data.DISPLAY_NAME_PRIMARY,
+        ContactsContract.Data.STARRED,
+        ContactsContract.Data.PHOTO_URI,
+        ContactsContract.Data.PHOTO_THUMBNAIL_URI,
+        // DATA1 is email or phone. Type can be distinguished by MIMETYPE
+        ContactsContract.Data.DATA1,
+        ContactsContract.Data.MIMETYPE
+    };
 
-   private Context context;
-   private PublishSubject<List<Contact>> subject;
+    private ContentResolver resolver;
 
-   public static synchronized RxContacts with (Context context) {
-      if (instance == null) {
-         instance = new RxContacts(context.getApplicationContext());
-      }
-      return instance;
-   }
+    public static Observable<Contact> fetch (@NonNull final Context context) {
+        return Observable.create(new Observable.OnSubscribe<Contact>() {
+            @Override
+            public void call (Subscriber<? super Contact> subscriber) {
+                new RxContacts(context).fetch(subscriber);
+            }
+        });
+    }
 
-   private RxContacts (Context context) {
-      this.context = context;
-   }
+    private RxContacts (@NonNull Context context) {
+        resolver = context.getContentResolver();
+    }
 
-   public PublishSubject<List<Contact>> requestContacts () {
-      subject = PublishSubject.create();
-      startHiddenActivity();
-      return subject;
-   }
+    private void fetch (Subscriber<? super Contact> subscriber) {
+        LongSparseArray<Contact> contacts = new LongSparseArray<>();
+        // Create a new cursor and go to the first position
+        Cursor cursor = createCursor();
+        cursor.moveToFirst();
+        // Get the column indexes
+        int idxId = cursor.getColumnIndex(ContactsContract.Data.CONTACT_ID);
+        int idxDisplayNamePrimary = cursor.getColumnIndex(ContactsContract.Data.DISPLAY_NAME_PRIMARY);
+        int idxStarred = cursor.getColumnIndex(ContactsContract.Data.STARRED);
+        int idxPhoto = cursor.getColumnIndex(ContactsContract.Data.PHOTO_URI);
+        int idxThumbnail = cursor.getColumnIndex(ContactsContract.Data.PHOTO_THUMBNAIL_URI);
+        int idxMimetype = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE);
+        int idxData1 = cursor.getColumnIndex(ContactsContract.Data.DATA1);
+        // Map the columns to the fields of the contact
+        while (!cursor.isAfterLast()) {
+            // Get the id and the contact for this id. The contact may be a new contact.
+            long id = cursor.getLong(idxId);
+            Contact contact = contacts.get(id, null);
+            if (contact == null) {
+                contact = new Contact(id);
+                ColumnMapper.mapDisplayName(cursor, contact, idxDisplayNamePrimary);
+                ColumnMapper.mapStarred(cursor, contact, idxStarred);
+                ColumnMapper.mapPhoto(cursor, contact, idxPhoto);
+                ColumnMapper.mapThumbnail(cursor, contact, idxThumbnail);
+                // Add the contact to the collection
+                contacts.put(id, contact);
+            } else {
+                String mimetype = cursor.getString(idxMimetype);
+                switch (mimetype) {
+                    case ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE: {
+                        ColumnMapper.mapEmail(cursor, contact, idxData1);
+                        break;
+                    }
+                    case ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE: {
+                        ColumnMapper.mapPhoneNumber(cursor, contact, idxData1);
+                        break;
+                    }
+                }
+            }
+            cursor.moveToNext();
+        }
+        // Emit the contacts
+        for (int i = 0; i < contacts.size(); i++) {
+            subscriber.onNext(contacts.valueAt(i));
+        }
+        subscriber.onCompleted();
+    }
 
-   void onContactsLoaded (@Nullable List<Contact> contacts) {
-      if (contacts != null) {
-         subject.onNext(contacts);
-      }
-      subject.onCompleted();
-   }
-
-   void onDestroy () {
-      if (subject != null) {
-         subject.onCompleted();
-      }
-   }
-
-   private void startHiddenActivity () {
-      Intent intent = new Intent(context, HiddenActivity.class);
-      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      context.startActivity(intent);
-   }
+    private Cursor createCursor () {
+        return resolver.query(
+            ContactsContract.Data.CONTENT_URI,
+            PROJECTION,
+            null,
+            null,
+            ContactsContract.Data.CONTACT_ID
+        );
+    }
 }
