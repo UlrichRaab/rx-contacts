@@ -14,10 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.List;
-
-import de.ulrichraab.rxcontacts.model.Contact;
-import de.ulrichraab.rxcontacts.model.PhoneNumber;
+import de.ulrichraab.rxcontacts.Contact;
 
 
 /**
@@ -97,7 +94,7 @@ public class ContactView extends RelativeLayout {
    }
 
    private void updatePhotoView (Contact contact) {
-      Uri photoUri = contact.getThumbnail();
+      Uri photoUri = contact.thumbnail;
       if (photoUri == null) {
          photoView.setImageResource(android.R.drawable.ic_input_add);
       }
@@ -109,31 +106,15 @@ public class ContactView extends RelativeLayout {
    }
 
    private void updateDisplayNameView (Contact contact) {
-      String displayName = contact.getDisplayName();
+      String displayName = contact.displayName;
       displayNameView.setText(displayName);
    }
 
    private void updatePhoneNumberView (Contact contact) {
-      List<PhoneNumber> phoneNumbers = contact.getPhoneNumbers();
-      if (phoneNumbers.isEmpty()) {
-         phoneNumberView.setVisibility(GONE);
-         setEnabled(false);
+      if (!contact.phoneNumbers.isEmpty()) {
+         String phoneNumber = contact.phoneNumbers.iterator().next();
+         phoneNumberView.setText(phoneNumber);
       }
-      else {
-         PhoneNumber phoneNumber = pickPhoneNumber(phoneNumbers);
-         String text = PhoneNumberUtils.formatNumber(phoneNumber.getNumber());
-         text += " (" + phoneNumber.getTypeLabel() + ")";
-         phoneNumberView.setText(text);
-         setEnabled(true);
-      }
-   }
-
-   private PhoneNumber pickPhoneNumber (List<PhoneNumber> phoneNumbers) {
-      PhoneNumber result = null;
-      for (PhoneNumber phoneNumber : phoneNumbers) {
-         return phoneNumber;
-      }
-      return result;
    }
 
    /**
