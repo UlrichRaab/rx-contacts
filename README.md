@@ -2,7 +2,7 @@
 Android library to get contacts using RxJava
 
 # Setup
-To use this library your minSdkVersion must be >= 15.
+To use this library your minSdkVersion must be >= 16.
 
 In the build.gradle of your project add:
 
@@ -18,15 +18,14 @@ In the build.gradle of your app module add:
 
 ```gradle
 dependencies {
-    compile 'de.ulrichraab:rx-contacts:1.0.2'
+    compile 'de.ulrichraab:rx-contacts:1.1.0'
 }
 ```
 
 # Example
 
 ```java
-RxContacts.with(context)
-          .requestContacts()
+RxContacts.fetch(context)
           .subscribe(new Observer<List<Contact>>() {
              @Override
              public void onCompleted() {
@@ -37,8 +36,8 @@ RxContacts.with(context)
                 // Handle error
              }
              @Override
-             public void onNext(List<Contact> contacts) {
-                // Use the contacts
+             public void onNext(Contact contact) {
+                // Use the contact
              }
           });
 ```
