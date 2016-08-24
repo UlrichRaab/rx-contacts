@@ -25,7 +25,7 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 publish {
     groupId = 'de.ulrichraab'
     artifactId = 'rx-contacts'
-    publishVersion = '1.0.3'
+    publishVersion = '1.1.0'
     desc = 'Android library to get contacts using RxJava'
     website = 'https://github.com/UlrichRaab/rx-contacts'
     licences = ['Apache-2.0']
