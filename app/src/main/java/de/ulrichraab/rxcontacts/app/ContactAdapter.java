@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.ulrichraab.rxcontacts.model.Contact;
+import de.ulrichraab.rxcontacts.Contact;
 
 
 /**
