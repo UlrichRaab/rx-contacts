@@ -26,7 +26,7 @@ dependencies {
 
 ```java
 RxContacts.fetch(context)
-          .subscribe(new Observer<List<Contact>>() {
+          .subscribe(new Observer<Contact>() {
              @Override
              public void onCompleted() {
                 // Loading done
