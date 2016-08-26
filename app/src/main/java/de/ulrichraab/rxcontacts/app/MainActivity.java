@@ -12,6 +12,8 @@ import de.ulrichraab.rxcontacts.Contact;
 import de.ulrichraab.rxcontacts.RxContacts;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 
@@ -48,7 +50,18 @@ public class MainActivity extends AppCompatActivity {
     private void requestContacts () {
         RxContacts
             .fetch(this)
-            .toList()
+            .filter(new Func1<Contact, Boolean>() {
+                @Override
+                public Boolean call (Contact contact) {
+                    return contact.inVisibleGroup == 1;
+                }
+            })
+            .toSortedList(new Func2<Contact, Contact, Integer>() {
+                @Override
+                public Integer call (Contact lhs, Contact rhs) {
+                    return lhs.displayName.compareTo(rhs.displayName);
+                }
+            })
             .observeOn(Schedulers.io())
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(new Observer<List<Contact>>() {

@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 6
-        versionName "1.1.0"
+        versionCode 7
+        versionName "1.1.1"
     }
     buildTypes {
         release {
@@ -25,7 +25,7 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 publish {
     groupId = 'de.ulrichraab'
     artifactId = 'rx-contacts'
-    publishVersion = '1.1.0'
+    publishVersion = '1.1.1'
     desc = 'Android library to get contacts using RxJava'
     website = 'https://github.com/UlrichRaab/rx-contacts'
     licences = ['Apache-2.0']

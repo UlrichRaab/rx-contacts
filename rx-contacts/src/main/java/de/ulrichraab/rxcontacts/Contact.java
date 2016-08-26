@@ -28,14 +28,50 @@ import java.util.Set;
  */
 public class Contact {
 
+    /**
+     * The unique id of this contact.
+     */
     public final long id;
+
+    /**
+     * Flag indicating if this contact should be visible in any user interface.
+     */
+    public int inVisibleGroup;
+
+    /**
+     * The display name of this contact.
+     */
     public String displayName;
+
+    /**
+     * Flag indicating if this contact is a favorite contact.
+     */
     public boolean starred;
+
+    /**
+     * The URI of the full-size photo of this contact.
+     */
     public Uri photo;
+
+    /**
+     * The URI of the thumbnail of the photo of this contact.
+     */
     public Uri thumbnail;
+
+    /**
+     * The email addresses of this contact.
+     */
     public Set<String> emails = new HashSet<>();
+
+    /**
+     * The phone numbers of this contact.
+     */
     public Set<String> phoneNumbers = new HashSet<>();
 
+    /**
+     * Creates a new contact with the specified id.
+     * @param id The id of the contact.
+     */
     Contact (long id) {
         this.id = id;
     }

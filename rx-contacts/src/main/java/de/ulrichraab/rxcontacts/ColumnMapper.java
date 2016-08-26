@@ -29,6 +29,10 @@ class ColumnMapper {
     // Utility class -> No instances allowed
     private ColumnMapper () {}
 
+    static void mapInVisibleGroup (Cursor cursor, Contact contact, int columnIndex) {
+        contact.inVisibleGroup = cursor.getInt(columnIndex);
+    }
+
     static void mapDisplayName (Cursor cursor, Contact contact, int columnIndex) {
         String displayName = cursor.getString(columnIndex);
         if (displayName != null && !displayName.isEmpty()) {
@@ -46,6 +50,8 @@ class ColumnMapper {
     static void mapPhoneNumber (Cursor cursor, Contact contact, int columnIndex) {
         String phoneNumber = cursor.getString(columnIndex);
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            // Remove all whitespaces
+            phoneNumber = phoneNumber.replaceAll("\\s+","");
             contact.phoneNumbers.add(phoneNumber);
         }
     }
