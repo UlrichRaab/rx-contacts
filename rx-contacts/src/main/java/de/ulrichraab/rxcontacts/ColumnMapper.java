@@ -50,6 +50,8 @@ class ColumnMapper {
     static void mapPhoneNumber (Cursor cursor, Contact contact, int columnIndex) {
         String phoneNumber = cursor.getString(columnIndex);
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            // Remove all whitespaces
+            phoneNumber = phoneNumber.replaceAll("\\s+","");
             contact.phoneNumbers.add(phoneNumber);
         }
     }
