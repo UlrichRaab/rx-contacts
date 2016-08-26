@@ -26,9 +26,17 @@ import android.util.LongSparseArray;
 import rx.Observable;
 import rx.Subscriber;
 
+import static de.ulrichraab.rxcontacts.ColumnMapper.mapDisplayName;
+import static de.ulrichraab.rxcontacts.ColumnMapper.mapEmail;
+import static de.ulrichraab.rxcontacts.ColumnMapper.mapInVisibleGroup;
+import static de.ulrichraab.rxcontacts.ColumnMapper.mapPhoneNumber;
+import static de.ulrichraab.rxcontacts.ColumnMapper.mapPhoto;
+import static de.ulrichraab.rxcontacts.ColumnMapper.mapStarred;
+import static de.ulrichraab.rxcontacts.ColumnMapper.mapThumbnail;
+
 
 /**
- * TODO Write javadoc
+ * Android contacts as rx observable.
  * @author Ulrich Raab
  */
 public class RxContacts {
@@ -39,13 +47,18 @@ public class RxContacts {
         ContactsContract.Data.STARRED,
         ContactsContract.Data.PHOTO_URI,
         ContactsContract.Data.PHOTO_THUMBNAIL_URI,
-        // DATA1 is email or phone. Type can be distinguished by MIMETYPE
         ContactsContract.Data.DATA1,
-        ContactsContract.Data.MIMETYPE
+        ContactsContract.Data.MIMETYPE,
+        ContactsContract.Data.IN_VISIBLE_GROUP
     };
 
     private ContentResolver resolver;
 
+    /**
+     * Fetches all contacts from the contacts apps and social networking apps.
+     * @param context The context.
+     * @return Observable that emits contacts.
+     */
     public static Observable<Contact> fetch (@NonNull final Context context) {
         return Observable.create(new Observable.OnSubscribe<Contact>() {
             @Override
@@ -66,6 +79,7 @@ public class RxContacts {
         cursor.moveToFirst();
         // Get the column indexes
         int idxId = cursor.getColumnIndex(ContactsContract.Data.CONTACT_ID);
+        int idxInVisibleGroup = cursor.getColumnIndex(ContactsContract.Data.IN_VISIBLE_GROUP);
         int idxDisplayNamePrimary = cursor.getColumnIndex(ContactsContract.Data.DISPLAY_NAME_PRIMARY);
         int idxStarred = cursor.getColumnIndex(ContactsContract.Data.STARRED);
         int idxPhoto = cursor.getColumnIndex(ContactsContract.Data.PHOTO_URI);
@@ -74,26 +88,29 @@ public class RxContacts {
         int idxData1 = cursor.getColumnIndex(ContactsContract.Data.DATA1);
         // Map the columns to the fields of the contact
         while (!cursor.isAfterLast()) {
-            // Get the id and the contact for this id. The contact may be a new contact.
+            // Get the id and the contact for this id. The contact may be a null.
             long id = cursor.getLong(idxId);
             Contact contact = contacts.get(id, null);
             if (contact == null) {
+                // Create a new contact
                 contact = new Contact(id);
-                ColumnMapper.mapDisplayName(cursor, contact, idxDisplayNamePrimary);
-                ColumnMapper.mapStarred(cursor, contact, idxStarred);
-                ColumnMapper.mapPhoto(cursor, contact, idxPhoto);
-                ColumnMapper.mapThumbnail(cursor, contact, idxThumbnail);
+                // Map the non collection attributes
+                mapInVisibleGroup(cursor, contact, idxInVisibleGroup);
+                mapDisplayName(cursor, contact, idxDisplayNamePrimary);
+                mapStarred(cursor, contact, idxStarred);
+                mapPhoto(cursor, contact, idxPhoto);
+                mapThumbnail(cursor, contact, idxThumbnail);
                 // Add the contact to the collection
                 contacts.put(id, contact);
             } else {
                 String mimetype = cursor.getString(idxMimetype);
                 switch (mimetype) {
                     case ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE: {
-                        ColumnMapper.mapEmail(cursor, contact, idxData1);
+                        mapEmail(cursor, contact, idxData1);
                         break;
                     }
                     case ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE: {
-                        ColumnMapper.mapPhoneNumber(cursor, contact, idxData1);
+                        mapPhoneNumber(cursor, contact, idxData1);
                         break;
                     }
                 }
