@@ -1,0 +1,6 @@
+{
+  "name": "RxContacts",
+  "tagline": "Android library to get contacts using RxJava",
+  "body": "# RxContacts\r\nRxContacts is a android library which simplifies getting contacts by using RxJava.\r\n\r\n# Setup\r\nTo use this library your minSdkVersion must be >= 16.\r\n\r\nIn the build.gradle of your project add:\r\n\r\n```gradle\r\nrepositories {\r\n    maven {\r\n       url 'https://dl.bintray.com/ulrichraab/maven'\r\n    }\r\n}\r\n```\r\n\r\nIn the build.gradle of your app module add:\r\n\r\n```gradle\r\ndependencies {\r\n    compile 'de.ulrichraab:rx-contacts:1.1.1'\r\n}\r\n```\r\n\r\n# Example\r\n\r\n```java\r\nRxContacts.fetch(context)\r\n          .subscribe(new Observer<Contact>() {\r\n             @Override\r\n             public void onCompleted() {\r\n                // Loading done\r\n             }\r\n             @Override\r\n             public void onError (Throwable e) {\r\n                // Handle error\r\n             }\r\n             @Override\r\n             public void onNext(Contact contact) {\r\n                // Use the contact\r\n             }\r\n          });\r\n```",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
