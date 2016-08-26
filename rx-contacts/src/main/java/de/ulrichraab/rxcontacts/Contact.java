@@ -29,6 +29,7 @@ import java.util.Set;
 public class Contact {
 
     public final long id;
+    public int inVisibleGroup;
     public String displayName;
     public boolean starred;
     public Uri photo;
