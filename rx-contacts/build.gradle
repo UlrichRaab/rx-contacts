@@ -2,14 +2,17 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 24
-        versionCode 7
-        versionName "1.1.1"
+
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        versionCode rootProject.ext.rxContactsVersionCode
+        versionName rootProject.ext.rxContactsVersionName
     }
     buildTypes {
         release {
@@ -25,7 +28,7 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 publish {
     groupId = 'de.ulrichraab'
     artifactId = 'rx-contacts'
-    publishVersion = '1.1.1'
+    publishVersion = rootProject.ext.rxContactsVersionName
     desc = 'Android library to get contacts using RxJava'
     website = 'https://github.com/UlrichRaab/rx-contacts'
     licences = ['Apache-2.0']
@@ -36,9 +39,9 @@ publish {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'io.reactivex:rxandroid:1.2.1'
-    compile 'io.reactivex:rxjava:1.1.9'
+    compile "com.android.support:appcompat-v7:$rootProject.ext.androidSupportVersion"
+    compile "io.reactivex:rxandroid:$rootProject.ext.rxAndroidVersion"
+    compile "io.reactivex:rxjava:$rootProject.ext.rxJavaVersion"
     // Testing
-    testCompile 'junit:junit:4.12'
+    testCompile "junit:junit:$rootProject.ext.junitVersion"
 }

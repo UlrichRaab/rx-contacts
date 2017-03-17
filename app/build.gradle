@@ -1,15 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
+
         applicationId "de.ulrichraab.rxcontacts.app"
-        minSdkVersion 16
-        targetSdkVersion 24
-        versionCode 4
-        versionName "1.0.3"
+
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        versionCode rootProject.ext.rxContactsVersionCode
+        versionName rootProject.ext.rxContactsVersionName
     }
     buildTypes {
         release {
@@ -20,9 +24,12 @@ android {
 }
 
 dependencies {
+
     compile project(":rx-contacts")
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:recyclerview-v7:24.2.0'
+
+    compile "com.android.support:appcompat-v7:$rootProject.ext.androidSupportVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.ext.androidSupportVersion"
+
     // Testing
-    testCompile 'junit:junit:4.12'
+    testCompile "junit:junit:$rootProject.ext.junitVersion"
 }
