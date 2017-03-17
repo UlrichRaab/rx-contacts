@@ -117,6 +117,8 @@ public class RxContacts {
             }
             cursor.moveToNext();
         }
+        // Close the cursor
+        cursor.close();
         // Emit the contacts
         for (int i = 0; i < contacts.size(); i++) {
             subscriber.onNext(contacts.valueAt(i));
