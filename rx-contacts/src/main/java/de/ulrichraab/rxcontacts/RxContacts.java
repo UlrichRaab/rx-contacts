@@ -57,7 +57,7 @@ public class RxContacts {
     /**
      * Fetches all contacts from the contacts apps and social networking apps.
      * @param context The context.
-     * @return Observable that emits contacts.
+     * @return Observable that emits contacts on success.
      */
     public static Observable<Contact> fetch (@NonNull final Context context) {
         return Observable.create(new Observable.OnSubscribe<Contact>() {
@@ -117,6 +117,8 @@ public class RxContacts {
             }
             cursor.moveToNext();
         }
+        // Close the cursor
+        cursor.close();
         // Emit the contacts
         for (int i = 0; i < contacts.size(); i++) {
             subscriber.onNext(contacts.valueAt(i));
