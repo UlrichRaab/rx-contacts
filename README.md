@@ -5,14 +5,14 @@ Android library to get contacts using RxJava2
 First add jitpack to your projects build.gradle file
 ```gradle
 repositories {
-        maven { url 'https://jitpack.io' }
+    maven { url 'https://jitpack.io' }
 }
 ```
 
 Then add the dependency in modules build.gradle file
 ```gradle
 dependencies {
-    compile 'com.github.mirrajabi:rx-contacts:1.0'
+    compile 'com.github.mirrajabi:rx-contacts2:1.0'
 }
 ```
 
