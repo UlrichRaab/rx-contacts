@@ -1,11 +1,10 @@
-package de.ulrichraab.rxcontacts.app;
+package ir.mirrajabi.rxcontacts.app;
 
 
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.telephony.PhoneNumberUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +13,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import de.ulrichraab.rxcontacts.Contact;
+import ir.mirrajabi.rxcontacts.Contact;
 
 
 /**
  * TODO Write javadoc
  * @author Ulrich Raab
+ * @author MADNESS
  */
 public class ContactView extends RelativeLayout {
 
@@ -94,7 +94,7 @@ public class ContactView extends RelativeLayout {
    }
 
    private void updatePhotoView (Contact contact) {
-      Uri photoUri = contact.thumbnail;
+      Uri photoUri = contact.getThumbnail();
       if (photoUri == null) {
          photoView.setImageResource(android.R.drawable.ic_input_add);
       }
@@ -106,13 +106,13 @@ public class ContactView extends RelativeLayout {
    }
 
    private void updateDisplayNameView (Contact contact) {
-      String displayName = contact.displayName;
+      String displayName = contact.getDisplayName();
       displayNameView.setText(displayName);
    }
 
    private void updatePhoneNumberView (Contact contact) {
-      if (!contact.phoneNumbers.isEmpty()) {
-         String phoneNumber = contact.phoneNumbers.iterator().next();
+      if (!contact.getPhoneNumbers().isEmpty()) {
+         String phoneNumber = contact.getPhoneNumbers().iterator().next();
          phoneNumberView.setText(phoneNumber);
       }
    }

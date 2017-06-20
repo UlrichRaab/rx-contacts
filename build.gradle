@@ -1,55 +1,23 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
-
     repositories {
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
-        classpath 'com.novoda:bintray-release:0.3.4'
-        classpath 'org.ajoberstar:grgit:1.6.0'
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'me.tatarka:gradle-retrolambda:3.4.0'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
-}
-
-import org.ajoberstar.grgit.Grgit
-
-ext {
-
-    git = Grgit.open(currentDir: projectDir)
-
-    rxContactsVersionCode = git.head().time
-    rxContactsVersionName = git.describe()
-
-    // sdk and tools
-    minSdkVersion = 16
-    compileSdkVersion = 25
-    targetSdkVersion = 25
-    buildToolsVersion = '25.0.2'
-
-    // dependencies
-    androidSupportVersion = '25.3.0'
-    rxAndroidVersion = '1.2.1'
-    rxJavaVersion = '1.1.9'
-
-    // testing
-    junitVersion = '4.12'
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-task printVersion() {
-    println("-------------------------------------")
-    println("Version code: $rxContactsVersionCode")
-    println("Version name: $rxContactsVersionName")
-    println("-------------------------------------")
 }

@@ -1,1 +1,1 @@
-include ':app', ':rx-contacts'
+include ':app', ':library'

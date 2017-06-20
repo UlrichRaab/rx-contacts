@@ -1,45 +1,33 @@
-# RxContacts
-Android library to get contacts using RxJava
+# rxjava2-contacts
+Android library to get contacts using RxJava2
 
-**Current version: 1.1.2**
-
-# Setup
-To use this library your minSdkVersion must be >= 16.
-
-In the build.gradle of your project add:
-
+# Usage
+First add jitpack to your projects build.gradle file
 ```gradle
 repositories {
-    maven {
-       url 'https://dl.bintray.com/ulrichraab/maven'
-    }
+        maven { url 'https://jitpack.io' }
 }
 ```
 
-In the build.gradle of your app module add:
-
+Then add the dependency in modules build.gradle file
 ```gradle
 dependencies {
-    compile 'de.ulrichraab:rx-contacts:1.1.2'
+    compile 'com.github.mirrajabi:rx-contacts:1.0'
 }
 ```
 
 # Example
 
 ```java
-RxContacts.fetch(context)
-          .subscribe(new Observer<Contact>() {
-             @Override
-             public void onCompleted() {
-                // Loading done
-             }
-             @Override
-             public void onError (Throwable e) {
-                // Handle error
-             }
-             @Override
-             public void onNext(Contact contact) {
-                // Use the contact
-             }
+RxContacts.fetch(this)
+          .filter(m->m.getInVisibleGroup() == 1)
+          .toSortedList(Contact::compareTo)
+          .observeOn(Schedulers.io())
+          .subscribeOn(AndroidSchedulers.mainThread())
+          .subscribe(contacts -> {
+              // Do something...
           });
 ```
+
+## Using RxJava 1.x?
+use the original library [https://github.com/UlrichRaab/rx-contacts](https://github.com/UlrichRaab/rx-contacts)

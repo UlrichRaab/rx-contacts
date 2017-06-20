@@ -1,19 +1,19 @@
-package de.ulrichraab.rxcontacts.app;
+package ir.mirrajabi.rxcontacts.app;
 
 
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.ulrichraab.rxcontacts.Contact;
+import ir.mirrajabi.rxcontacts.Contact;
 
 
 /**
  * TODO Write javadoc
  * @author Ulrich Raab
+ * @author MADNESS
  */
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
 
@@ -24,13 +24,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
    public ViewHolder onCreateViewHolder (ViewGroup parent, int viewType) {
       // Inflate the ContactView and set the click listener
       ContactView contactView = ContactView.inflate(parent, false);
-      contactView.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick (View v) {
-            if (callback != null) {
-               Contact contact = ((ContactView) v).getContact();
-               callback.onClick(contact);
-            }
+      contactView.setOnClickListener(v -> {
+         if (callback != null) {
+            Contact contact = ((ContactView) v).getContact();
+            callback.onClick(contact);
          }
       });
       // Create and return the view holder

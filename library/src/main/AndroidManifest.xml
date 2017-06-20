@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="de.ulrichraab.rxcontacts">
+          package="ir.mirrajabi.rxcontacts">
 
     <application
         android:allowBackup="true"
