@@ -112,8 +112,11 @@ public class ContactView extends RelativeLayout {
 
    private void updatePhoneNumberView (Contact contact) {
       if (!contact.phoneNumbers.isEmpty()) {
-         String phoneNumber = contact.phoneNumbers.iterator().next();
-         phoneNumberView.setText(phoneNumber);
+         StringBuilder builder = new StringBuilder();
+         for (String phoneNumber : contact.phoneNumbers) {
+            builder.append(phoneNumber).append(" / ");
+         }
+         phoneNumberView.setText(builder.toString());
       }
    }
 
