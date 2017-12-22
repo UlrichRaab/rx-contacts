@@ -69,6 +69,11 @@ public class Contact {
     public Set<String> phoneNumbers = new HashSet<>();
 
     /**
+     * The postal addresses of this contact.
+     */
+    public Set<String> addresses = new HashSet<>();
+
+    /**
      * Creates a new contact with the specified id.
      * @param id The id of the contact.
      */

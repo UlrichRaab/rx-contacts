@@ -73,4 +73,11 @@ class ColumnMapper {
             contact.thumbnail = Uri.parse(uri);
         }
     }
+
+    static void mapAddress (Cursor cursor, Contact contact, int columnIndex) {
+        String address = cursor.getString(columnIndex);
+        if (address != null && !address.isEmpty()) {
+            contact.addresses.add(address);
+        }
+    }
 }

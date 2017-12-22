@@ -21,11 +21,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.LongSparseArray;
 
 import rx.Observable;
 import rx.Subscriber;
 
+import static de.ulrichraab.rxcontacts.ColumnMapper.mapAddress;
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapDisplayName;
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapEmail;
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapInVisibleGroup;
@@ -59,20 +61,20 @@ public class RxContacts {
      * @param context The context.
      * @return Observable that emits contacts on success.
      */
-    public static Observable<Contact> fetch (@NonNull final Context context) {
+    public static Observable<Contact> fetch(@NonNull final Context context) {
         return Observable.create(new Observable.OnSubscribe<Contact>() {
             @Override
-            public void call (Subscriber<? super Contact> subscriber) {
+            public void call(Subscriber<? super Contact> subscriber) {
                 new RxContacts(context).fetch(subscriber);
             }
         });
     }
 
-    private RxContacts (@NonNull Context context) {
+    private RxContacts(@NonNull Context context) {
         resolver = context.getContentResolver();
     }
 
-    private void fetch (Subscriber<? super Contact> subscriber) {
+    private void fetch(Subscriber<? super Contact> subscriber) {
         LongSparseArray<Contact> contacts = new LongSparseArray<>();
         // Create a new cursor and go to the first position
         Cursor cursor = createCursor();
@@ -115,6 +117,9 @@ public class RxContacts {
                     mapPhoneNumber(cursor, contact, idxData1);
                     break;
                 }
+                case ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE: {
+                    mapAddress(cursor, contact, idxData1);
+                }
             }
 
             cursor.moveToNext();
@@ -128,7 +133,7 @@ public class RxContacts {
         subscriber.onCompleted();
     }
 
-    private Cursor createCursor () {
+    private Cursor createCursor() {
         return resolver.query(
             ContactsContract.Data.CONTENT_URI,
             PROJECTION,
