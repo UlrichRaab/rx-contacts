@@ -1,7 +1,7 @@
 # RxContacts
 Android library to get contacts using RxJava
 
-**Current version: 1.1.2**
+**Current version: 1.1.3**
 
 # Setup
 To use this library your minSdkVersion must be >= 16.
@@ -20,7 +20,7 @@ In the build.gradle of your app module add:
 
 ```gradle
 dependencies {
-    compile 'de.ulrichraab:rx-contacts:1.1.2'
+    compile 'de.ulrichraab:rx-contacts:1.1.3'
 }
 ```
 
