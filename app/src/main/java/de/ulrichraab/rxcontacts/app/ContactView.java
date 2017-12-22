@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.Iterator;
+
 import de.ulrichraab.rxcontacts.Contact;
 
 
@@ -23,110 +25,147 @@ import de.ulrichraab.rxcontacts.Contact;
  */
 public class ContactView extends RelativeLayout {
 
-   private Contact contact;
-   private ImageView photoView;
-   private TextView displayNameView;
-   private TextView phoneNumberView;
+    private static final String NEWLINE = "\n";
 
-   /**
-    * Inflates a new {@link ContactView} widget.
-    * @param parent The view to be the parent of the inflated contact view.
-    * @param attachToParent Whether the inflated contact view should be attached to the parent view.
-    */
-   public static ContactView inflate (ViewGroup parent, boolean attachToParent) {
-      if (parent == null) {
-         return null;
-      }
-      Context context = parent.getContext();
-      LayoutInflater inflater = LayoutInflater.from(context);
-      return (ContactView) inflater.inflate(R.layout.list_item_contact, parent, attachToParent);
-   }
+    private Contact contact;
+    private ImageView photoView;
+    private TextView displayNameView;
+    private TextView phoneNumberView;
+    private TextView addressesView;
 
-   // region Constructors
+    /**
+     * Inflates a new {@link ContactView} widget.
+     * @param parent The view to be the parent of the inflated contact view.
+     * @param attachToParent Whether the inflated contact view should be attached to the parent view.
+     */
+    public static ContactView inflate(ViewGroup parent, boolean attachToParent) {
+        if (parent == null) {
+            return null;
+        }
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        return (ContactView) inflater.inflate(R.layout.list_item_contact, parent, attachToParent);
+    }
 
-   public ContactView (Context context) {
-      this(context, null);
-   }
+    // region Constructors
 
-   public ContactView (Context context, AttributeSet attrs) {
-      this(context, attrs, 0);
-   }
+    public ContactView(Context context) {
+        this(context, null);
+    }
 
-   public ContactView (Context context, AttributeSet attrs, int defStyleAttr) {
-      super(context, attrs, defStyleAttr);
-   }
+    public ContactView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-   // endregion
+    public ContactView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
 
-   @Override
-   protected void onFinishInflate () {
-      super.onFinishInflate();
-      photoView = getView(R.id.imageView_photo);
-      displayNameView = getView(R.id.textView_displayName);
-      phoneNumberView = getView(R.id.textView_phoneNumber);
-   }
+    // endregion
 
-   /**
-    * Binds this view to the given contact.
-    * @param contact The contact to bind.
-    */
-   public void bind (@NonNull Contact contact) {
-      this.contact = contact;
-      updateView();
-   }
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        photoView = getView(R.id.imageView_photo);
+        displayNameView = getView(R.id.textView_displayName);
+        phoneNumberView = getView(R.id.textView_phoneNumber);
+        addressesView = getView(R.id.textView_addresses);
+    }
 
-   public Contact getContact () {
-      return contact;
-   }
+    /**
+     * Binds this view to the given contact.
+     * @param contact The contact to bind.
+     */
+    public void bind(@NonNull Contact contact) {
+        this.contact = contact;
+        updateView();
+    }
 
-   /**
-    * Updates this view.
-    */
-   private void updateView () {
-      Contact contact = getContact();
-      if (contact == null) {
-         String msg = "contact must be set before updating this view";
-         throw new IllegalStateException(msg);
-      }
-      updatePhotoView(contact);
-      updateDisplayNameView(contact);
-      updatePhoneNumberView(contact);
-   }
+    public Contact getContact() {
+        return contact;
+    }
 
-   private void updatePhotoView (Contact contact) {
-      Uri photoUri = contact.thumbnail;
-      if (photoUri == null) {
-         photoView.setImageResource(android.R.drawable.ic_input_add);
-      }
-      else {
-         // Context context = getContext();
-         photoView.setImageURI(photoUri);
-         // Picasso.with(context).load(photoUri).into(photoView);
-      }
-   }
+    /**
+     * Updates this view.
+     */
+    private void updateView() {
+        Contact contact = getContact();
+        if (contact == null) {
+            String msg = "contact must be set before updating this view";
+            throw new IllegalStateException(msg);
+        }
+        updatePhotoView(contact);
+        updateDisplayNameView(contact);
+        updatePhoneNumberView(contact);
+        updateAddressesView(contact);
+    }
 
-   private void updateDisplayNameView (Contact contact) {
-      String displayName = contact.displayName;
-      displayNameView.setText(displayName);
-   }
+    private void updatePhotoView(Contact contact) {
+        Uri photoUri = contact.thumbnail;
+        if (photoUri == null) {
+            photoView.setImageResource(android.R.drawable.ic_input_add);
+        }
+        else {
+            // Context context = getContext();
+            photoView.setImageURI(photoUri);
+            // Picasso.with(context).load(photoUri).into(photoView);
+        }
+    }
 
-   private void updatePhoneNumberView (Contact contact) {
-      if (!contact.phoneNumbers.isEmpty()) {
-         StringBuilder builder = new StringBuilder();
-         for (String phoneNumber : contact.phoneNumbers) {
-            builder.append(phoneNumber).append(" / ");
-         }
-         phoneNumberView.setText(builder.toString());
-      }
-   }
+    private void updateDisplayNameView(Contact contact) {
+        String displayName = contact.displayName;
+        displayNameView.setText(displayName);
+    }
 
-   /**
-    * Returns the view with the given id.
-    * @param id The id of the view.
-    * @return The view if found or null otherwise.
-    */
-   public <T extends View> T getView (@IdRes int id) {
-      // noinspection unchecked
-      return (T) findViewById(id);
-   }
+    private void updatePhoneNumberView(Contact contact) {
+        if (contact.phoneNumbers.isEmpty()) {
+            phoneNumberView.setVisibility(GONE);
+            phoneNumberView.setText(null);
+        }
+        else {
+            StringBuilder builder = new StringBuilder();
+            Iterator<String> iterator = contact.phoneNumbers.iterator();
+            while (iterator.hasNext()) {
+                String phoneNumber = iterator.next();
+                builder.append(phoneNumber);
+                if (iterator.hasNext()) {
+                    builder.append(NEWLINE);
+                }
+            }
+
+            phoneNumberView.setVisibility(VISIBLE);
+            phoneNumberView.setText(builder.toString());
+        }
+    }
+
+    private void updateAddressesView(Contact contact) {
+        if (contact.addresses.isEmpty()) {
+            addressesView.setVisibility(View.GONE);
+            addressesView.setText(null);
+        }
+        else {
+            StringBuilder builder = new StringBuilder();
+            Iterator<String> iterator = contact.addresses.iterator();
+            while (iterator.hasNext()) {
+                String address = iterator.next();
+                builder.append(address);
+                if (iterator.hasNext()) {
+                    builder.append(NEWLINE);
+                }
+            }
+
+            addressesView.setVisibility(VISIBLE);
+            addressesView.setText(builder.toString());
+        }
+    }
+
+    /**
+     * Returns the view with the given id.
+     * @param id The id of the view.
+     * @return The view if found or null otherwise.
+     */
+    public <T extends View> T getView(@IdRes int id) {
+        // noinspection unchecked
+        return (T) findViewById(id);
+    }
 }
