@@ -102,19 +102,21 @@ public class RxContacts {
                 mapThumbnail(cursor, contact, idxThumbnail);
                 // Add the contact to the collection
                 contacts.put(id, contact);
-            } else {
-                String mimetype = cursor.getString(idxMimetype);
-                switch (mimetype) {
-                    case ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE: {
-                        mapEmail(cursor, contact, idxData1);
-                        break;
-                    }
-                    case ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE: {
-                        mapPhoneNumber(cursor, contact, idxData1);
-                        break;
-                    }
+            }
+
+            // map phone number or email address
+            String mimetype = cursor.getString(idxMimetype);
+            switch (mimetype) {
+                case ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE: {
+                    mapEmail(cursor, contact, idxData1);
+                    break;
+                }
+                case ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE: {
+                    mapPhoneNumber(cursor, contact, idxData1);
+                    break;
                 }
             }
+
             cursor.moveToNext();
         }
         // Close the cursor
