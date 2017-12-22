@@ -34,7 +34,7 @@ ext {
     git = Grgit.open(currentDir: projectDir)
 
     rxContactsVersionCode = git.head().time
-    rxContactsVersionName = "1.1.4-test" //git.describe()
+    rxContactsVersionName = git.describe()
 
     // sdk and tools
     minSdkVersion = 16
