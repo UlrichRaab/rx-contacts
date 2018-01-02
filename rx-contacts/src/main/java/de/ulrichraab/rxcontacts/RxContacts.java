@@ -30,7 +30,9 @@ import rx.Subscriber;
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapAddress;
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapDisplayName;
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapEmail;
+import static de.ulrichraab.rxcontacts.ColumnMapper.mapFirstName;
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapInVisibleGroup;
+import static de.ulrichraab.rxcontacts.ColumnMapper.mapLastName;
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapPhoneNumber;
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapPhoto;
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapStarred;
@@ -50,6 +52,8 @@ public class RxContacts {
         ContactsContract.Data.PHOTO_URI,
         ContactsContract.Data.PHOTO_THUMBNAIL_URI,
         ContactsContract.Data.DATA1,
+        ContactsContract.Data.DATA2,
+        ContactsContract.Data.DATA3,
         ContactsContract.Data.MIMETYPE,
         ContactsContract.Data.IN_VISIBLE_GROUP
     };
@@ -87,7 +91,11 @@ public class RxContacts {
         int idxPhoto = cursor.getColumnIndex(ContactsContract.Data.PHOTO_URI);
         int idxThumbnail = cursor.getColumnIndex(ContactsContract.Data.PHOTO_THUMBNAIL_URI);
         int idxMimetype = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE);
-        int idxData1 = cursor.getColumnIndex(ContactsContract.Data.DATA1);
+        int idxFormattedPostalAddress = cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS);
+        int idxPhoneNumber = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+        int idxEmailAddress = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
+        int idxFirstName = cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME);
+        int idxLastName = cursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
         // Map the columns to the fields of the contact
         while (!cursor.isAfterLast()) {
             // Get the id and the contact for this id. The contact may be a null.
@@ -110,15 +118,19 @@ public class RxContacts {
             String mimetype = cursor.getString(idxMimetype);
             switch (mimetype) {
                 case ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE: {
-                    mapEmail(cursor, contact, idxData1);
+                    mapEmail(cursor, contact, idxEmailAddress);
                     break;
                 }
                 case ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE: {
-                    mapPhoneNumber(cursor, contact, idxData1);
+                    mapPhoneNumber(cursor, contact, idxPhoneNumber);
                     break;
                 }
                 case ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE: {
-                    mapAddress(cursor, contact, idxData1);
+                    mapAddress(cursor, contact, idxFormattedPostalAddress);
+                }
+                case ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE: {
+                    mapFirstName(cursor, contact, idxFirstName);
+                    mapLastName(cursor, contact, idxLastName);
                 }
             }
 
