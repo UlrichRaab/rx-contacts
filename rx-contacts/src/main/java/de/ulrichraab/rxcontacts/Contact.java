@@ -44,6 +44,16 @@ public class Contact {
     public String displayName;
 
     /**
+     * The first name of this contact.
+     */
+    public String firstName;
+
+    /**
+     * The last name of this contact.
+     */
+    public String lastName;
+
+    /**
      * Flag indicating if this contact is a favorite contact.
      */
     public boolean starred;

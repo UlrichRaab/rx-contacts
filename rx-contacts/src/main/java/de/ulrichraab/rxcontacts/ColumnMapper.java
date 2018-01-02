@@ -40,6 +40,20 @@ class ColumnMapper {
         }
     }
 
+    static void mapFirstName (Cursor cursor, Contact contact, int columnIndex) {
+        String firstName = cursor.getString(columnIndex);
+        if (firstName != null && !firstName.isEmpty()) {
+            contact.firstName = firstName;
+        }
+    }
+
+    static void mapLastName (Cursor cursor, Contact contact, int columnIndex) {
+        String lastName = cursor.getString(columnIndex);
+        if (lastName != null && !lastName.isEmpty()) {
+            contact.lastName = lastName;
+        }
+    }
+
     static void mapEmail (Cursor cursor, Contact contact, int columnIndex) {
         String email = cursor.getString(columnIndex);
         if (email != null && !email.isEmpty()) {
