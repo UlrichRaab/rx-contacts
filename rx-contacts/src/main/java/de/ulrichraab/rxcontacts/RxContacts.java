@@ -23,8 +23,9 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.util.LongSparseArray;
 
-import rx.Observable;
-import rx.Subscriber;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapDisplayName;
 import static de.ulrichraab.rxcontacts.ColumnMapper.mapEmail;
@@ -37,42 +38,44 @@ import static de.ulrichraab.rxcontacts.ColumnMapper.mapThumbnail;
 
 /**
  * Android contacts as rx observable.
+ *
  * @author Ulrich Raab
  */
 public class RxContacts {
 
     private static final String[] PROJECTION = {
-        ContactsContract.Data.CONTACT_ID,
-        ContactsContract.Data.DISPLAY_NAME_PRIMARY,
-        ContactsContract.Data.STARRED,
-        ContactsContract.Data.PHOTO_URI,
-        ContactsContract.Data.PHOTO_THUMBNAIL_URI,
-        ContactsContract.Data.DATA1,
-        ContactsContract.Data.MIMETYPE,
-        ContactsContract.Data.IN_VISIBLE_GROUP
+            ContactsContract.Data.CONTACT_ID,
+            ContactsContract.Data.DISPLAY_NAME_PRIMARY,
+            ContactsContract.Data.STARRED,
+            ContactsContract.Data.PHOTO_URI,
+            ContactsContract.Data.PHOTO_THUMBNAIL_URI,
+            ContactsContract.Data.DATA1,
+            ContactsContract.Data.MIMETYPE,
+            ContactsContract.Data.IN_VISIBLE_GROUP
     };
 
     private ContentResolver resolver;
 
     /**
      * Fetches all contacts from the contacts apps and social networking apps.
+     *
      * @param context The context.
      * @return Observable that emits contacts on success.
      */
-    public static Observable<Contact> fetch (@NonNull final Context context) {
-        return Observable.create(new Observable.OnSubscribe<Contact>() {
+    public static Observable<Contact> fetch(@NonNull final Context context) {
+        return Observable.create(new ObservableOnSubscribe<Contact>() {
             @Override
-            public void call (Subscriber<? super Contact> subscriber) {
-                new RxContacts(context).fetch(subscriber);
+            public void subscribe(ObservableEmitter<Contact> e) throws Exception {
+                new RxContacts(context).fetch(e);
             }
         });
     }
 
-    private RxContacts (@NonNull Context context) {
+    private RxContacts(@NonNull Context context) {
         resolver = context.getContentResolver();
     }
 
-    private void fetch (Subscriber<? super Contact> subscriber) {
+    private void fetch(ObservableEmitter<? super Contact> subscriber) {
         LongSparseArray<Contact> contacts = new LongSparseArray<>();
         // Create a new cursor and go to the first position
         Cursor cursor = createCursor();
@@ -125,16 +128,16 @@ public class RxContacts {
         for (int i = 0; i < contacts.size(); i++) {
             subscriber.onNext(contacts.valueAt(i));
         }
-        subscriber.onCompleted();
+        subscriber.onComplete();
     }
 
-    private Cursor createCursor () {
+    private Cursor createCursor() {
         return resolver.query(
-            ContactsContract.Data.CONTENT_URI,
-            PROJECTION,
-            null,
-            null,
-            ContactsContract.Data.CONTACT_ID
+                ContactsContract.Data.CONTENT_URI,
+                PROJECTION,
+                null,
+                null,
+                ContactsContract.Data.CONTACT_ID
         );
     }
 }

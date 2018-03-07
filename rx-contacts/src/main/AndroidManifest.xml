@@ -1,9 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="de.ulrichraab.rxcontacts">
+    package="de.ulrichraab.rxcontacts">
 
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:supportsRtl="true"/>
+        android:supportsRtl="true" />
 
 </manifest>
